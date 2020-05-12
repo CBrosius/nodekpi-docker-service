@@ -4,9 +4,12 @@
 
 FROM node:7
 
-RUN cd /opt && git clone https://github.com/aditosoftware/nodepki.git && cd /opt/nodepki && npm install
+### RUN cd /opt && git clone https://github.com/aditosoftware/nodepki.git && cd /opt/nodepki && npm install
 
-COPY start.sh /
+WORKDIR /opt/nodepki
+COPY . .
+
+RUN cd /opt/nodepki && npm install
 
 RUN chmod +x /start.sh
 
