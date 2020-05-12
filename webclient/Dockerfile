@@ -1,14 +1,17 @@
-#
-# image name: nodepki-webclient:7.0
-#
+FROM node:lts-alpine
 
-FROM node:7
+RUN apk add --no-cache \
+    openssl \
+    curl \
+	bash \
+	nano \
 
-RUN cd /opt && git clone https://github.com/aditosoftware/nodepki-webclient.git && cd /opt/nodepki-webclient && npm install
+WORKDIR /opt/webclient
+COPY . .
 
-COPY start.sh /
+RUN cd /opt/nodepki-webclient && npm install
 
-RUN chmod +x /start.sh
+RUN chmod +x /opt/nodepki-webclient/start.sh
 
 VOLUME ["/opt/nodepki-webclient/data"]
 
