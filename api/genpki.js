@@ -51,11 +51,8 @@ var createFileStructure = function() {
         openssl_root = openssl_root.replace(/{locality}/g, global.config.ca.root.locality);
         openssl_root = openssl_root.replace(/{organization}/g, global.config.ca.root.organization);
         openssl_root = openssl_root.replace(/{commonname}/g, global.config.ca.root.commonname);
-log(">>> Creating Root CA file structure")
+
         fs.writeFileSync(pkidir + 'root/openssl.cnf', openssl_root);
-log(">>> Finished Creating Root CA file structure")
-
-
 
         /*
          * Prepare intermediate/ dir
@@ -82,10 +79,8 @@ log(">>> Finished Creating Root CA file structure")
         openssl_intermediate = openssl_intermediate.replace(/{commonname}/g, global.config.ca.intermediate.commonname);
         openssl_intermediate = openssl_intermediate.replace(/{ocspurl}/g, global.config.ca.intermediate.ocsp.url);
         openssl_intermediate = openssl_intermediate.replace(/{crlurl}/g, global.config.ca.intermediate.crl.url);
-log(">>> Creating Intermediate CA file structure")
-        fs.writeFileSync(pkidir + 'intermediate/openssl.cnf', openssl_intermediate);
-log(">>> Finished Creating Intermediate CA file structure")
 
+        fs.writeFileSync(pkidir + 'intermediate/openssl.cnf', openssl_intermediate);
 
         /*
          * Prepare intermediate/ocsp dir
@@ -121,7 +116,7 @@ log(">>> Finished Creating Intermediate CA file structure")
 var createRootCA = function() {
     log(">>> Creating Root CA");
 
-    return new Promise(function(resolve, reject) {
+    
         // Create root key
         execSync('openssl genrsa -aes256 -out root.key.pem -passout pass:' + global.config.ca.root.passphrase + ' 4096', {
             cwd: pkidir + 'root'
@@ -129,11 +124,8 @@ var createRootCA = function() {
             // Create Root certificate
             execSync('openssl req -config openssl.cnf -key root.key.pem -new -x509 -days ' + global.config.ca.root.days + ' -sha256 -extensions v3_ca -out root.cert.pem -passin pass:' + global.config.ca.root.passphrase, {
                 cwd: pkidir + 'root'
-            }, function() {
-                resolve();
             });
         });
-    });
 };
 
 
