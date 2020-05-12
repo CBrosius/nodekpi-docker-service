@@ -80,7 +80,6 @@ EOF
 
 
 cd /opt/nodepki
-npm install
 
 if [ ! -s /opt/nodepki/data/user.db ]; then
   echo "Adding user to the database"
