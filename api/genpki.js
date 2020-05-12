@@ -158,7 +158,7 @@ var createIntermediateCA = function() {
                 }, function() {
                     // Remove intermediate.csr.pem file
 			log(">>> remove Intermediate Csr.pem file");
-                    fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
+                    // fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
 
                     // Create CA chain file
 			log(">>> Creating Intermediate CA chain file");
