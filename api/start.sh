@@ -29,7 +29,6 @@ tee /opt/nodepki/data/config/config.yml <<EOF
 ###
 ### Server config
 ###
-
 server:
     ip: 0.0.0.0
     http:
@@ -38,11 +37,9 @@ server:
     ocsp:
         domain: ${CA_OSCP_SERVER_URL}
         port: ${CA_OSCP_SERVER_PORT}
-
 ###
 ### CA config: Passphrase for CA Key
 ###
-
 ca:
     root:
         passphrase: ${ROOT_PASSPHRASE}
@@ -66,8 +63,6 @@ ca:
             url: ${CA_OSCP_SERVER_HTTP_URL}
         crl:
             url: ${CA_CRL_SERVER_HTTP_URL}
-
-
 ###
 ### Settings for end user certificates
 ###
@@ -77,7 +72,6 @@ cert:
     # E.g.: 365
     lifetime_max: ${CERT_MAX_LIFETIME_IN_DAYS}
 EOF
-
 
 cd /opt/nodepki
 

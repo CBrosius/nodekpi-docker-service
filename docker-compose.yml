@@ -5,7 +5,7 @@ services:
     image: nodepki-api:7.0
     environment:
       - ROOT_PASSPHRASE="123456789"
-      - ROOT_CA_COMMON_NAME="Private CA"
+      - ROOT_CA_COMMON_NAME="Private Root CA"
       - INTERMEDIATE_PASSPHRASE="123456789" 
       - INTERMEDIATE_CA_COMMON_NAME="Private Intermediate CA"
       - OCSP_PASSPHRASE="123456789"

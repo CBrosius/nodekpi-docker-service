@@ -17,18 +17,15 @@ CA_API_SERVER_TLS_ENABLED=${CA_API_SERVER_TLS_ENABLED:-false}
 mkdir -p /opt/nodepki-webclient/data/config
 
 tee /opt/nodepki-webclient/data/config/config.yml <<EOF
-
 server:
     baseurl: ${CA_WEBCLIENT_HTTP_URL}
     ip: ${CA_WEBCLIENT_BIND_IP_ADDRESS}
     port: ${CA_WEBCLIENT_SERVER_PORT}
-
 apiserver:
     hostname: ${CA_API_SERVER_URL}
     port: ${CA_API_SERVER_PLAIN_PORT}
     publicport: ${CA_API_SERVER_PLAIN_PORT}
     tls: ${CA_API_SERVER_TLS_ENABLED}
-
 csr_defaults:
     country: ${COUNTRY_CODE}
     state: ${STATE_NAME}
