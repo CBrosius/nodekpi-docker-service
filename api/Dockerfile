@@ -18,5 +18,5 @@ RUN chmod +x /start.sh
 
 VOLUME ["/opt/nodepki/data"]
 
-CMD ["bash", "/start.sh"]
+CMD ["bash", "/opt/nodepki/start.sh"]
 
