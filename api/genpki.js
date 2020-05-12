@@ -6,7 +6,6 @@ var log         = require('fancy-log');
 var fs          = require('fs-extra');
 var yaml        = require('js-yaml');
 var exec        = require('child_process').exec;
-var sleep       = require('sleep');
 
 // Absolute pki base dir
 const pkidir = __dirname + '/data/' + 'mypki/';
