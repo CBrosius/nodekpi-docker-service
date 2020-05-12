@@ -6,8 +6,6 @@ RUN apk add --no-cache \
 	bash \
 	nano \
 
-### RUN cd /opt && git clone https://github.com/aditosoftware/nodepki.git && cd /opt/nodepki && npm install
-
 WORKDIR /opt/nodepki
 COPY . .
 
