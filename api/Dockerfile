@@ -14,9 +14,9 @@ COPY . .
 
 RUN cd /opt/nodepki && npm install
 
-RUN chmod +x /start.sh
+RUN chmod +x /opt/nodepki/start.sh
 
 VOLUME ["/opt/nodepki/data"]
 
-CMD ["bash", "/start.sh"]
+CMD ["bash", "/opt/nodepki/start.sh"]
 
