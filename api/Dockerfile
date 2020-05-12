@@ -1,8 +1,11 @@
-#
-# image name: nodepki-api:7.0
-#
+FROM node:lts-alpine
 
-FROM node:7
+RUN apk add --no-cache \
+    openssl \
+    curl \
+	bash \
+	nano \
+    supervisor
 
 ### RUN cd /opt && git clone https://github.com/aditosoftware/nodepki.git && cd /opt/nodepki && npm install
 
