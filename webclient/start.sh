@@ -34,6 +34,6 @@ csr_defaults:
 EOF
 
 cd /opt/nodepki-webclient
-nmp install
+npm install
 
 node app.js
