@@ -156,10 +156,10 @@ var createIntermediateCA = function() {
   			log(">>> Creating Intermediate CA certificate");
               exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
-  			log(">>> wait a few seconds");
-					sleep(5000);
                 }, function() {
                     // Remove intermediate.csr.pem file
+  			log(">>> wait a few seconds");
+					sleep(5000);
 			log(">>> remove Intermediate Csr.pem file");
                     // fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
 
