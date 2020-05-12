@@ -5,6 +5,7 @@ RUN apk add --no-cache \
     curl \
     bash \
     nano \
+    supervisor
 
 WORKDIR /opt/nodepki-webclient
 COPY . .

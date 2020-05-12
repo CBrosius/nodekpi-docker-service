@@ -3,8 +3,9 @@ FROM node:lts-alpine
 RUN apk add --no-cache \
     openssl \
     curl \
-	bash \
-	nano \
+    bash \
+    nano \
+    supervisor
 
 WORKDIR /opt/nodepki
 COPY . .
