@@ -142,15 +142,21 @@ var createIntermediateCA = function() {
 
     return new Promise(function(resolve, reject) {
         // Create intermediate key
+        log(">>>> Creating Intermediate CA private Key...");
+        log(">>>>> 'openssl genrsa -aes256 -out intermediate.key.pem -passout pass:' + global.config.ca.intermediate.passphrase + ' 4096'");
         exec('openssl genrsa -aes256 -out intermediate.key.pem -passout pass:' + global.config.ca.intermediate.passphrase + ' 4096', {
             cwd: pkidir + 'intermediate'
         }, function() {
             // Create intermediate certificate request
+            log(">>>> Creating Intermediate CA Certificate Request (CSR)...");
+            log(">>>>> 'openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:' + global.config.ca.intermediate.passphrase");
             exec('openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:' + global.config.ca.intermediate.passphrase, {
                 cwd: pkidir + 'intermediate'
             }, function() {
                 // Create intermediate certificate
-                exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
+                log(">>>> Creating Intermediate CA Certificate...");
+                log(">>>>> 'openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch'");
+                    exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
                 }, function() {
                     // Remove intermediate.csr.pem file

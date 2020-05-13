@@ -78,7 +78,7 @@ npm install
 
 if [ ! -s /opt/nodepki/data/user.db ]; then
   echo "Adding user to the database"
-  nodejs nodepkictl useradd --username ${WEBUI_USER} --password ${WEBUI_PASS}
+  node nodepkictl useradd --username ${WEBUI_USER} --password ${WEBUI_PASS}
 fi
 
 node server.js
