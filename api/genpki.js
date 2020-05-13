@@ -3,7 +3,7 @@
  */
 
 var log         = require('fancy-log');
-var fs          = require('fs-extra');
+var fse         = require('fs-extra');
 var yaml        = require('js-yaml');
 var exec        = require('child_process').exec;
 var execSync    = require('child_process').execSync;
@@ -14,9 +14,9 @@ const pkidir = __dirname + '/data/' + 'mypki/';
 
 
 var PKIExists = function() {
-        fs.ensureDir(pkidir);
+        fse.ensureDir(pkidir);
 
-        if(fs.existsSync(pkidir + 'created')) {
+        if(fse.existsSync(pkidir + 'created')) {
             return true;
         } else {
             return false;
@@ -28,23 +28,23 @@ var createFileStructure = function() {
     log(">>> Creating CA file structure")
 
     return new Promise(function(resolve, reject) {
-        fs.ensureDirSync(pkidir);
+        fse.ensureDirSync(pkidir);
 
         /*
          * Prepare root/ dir
          */
 
-        fs.ensureDirSync(pkidir + 'root');
+        fse.ensureDirSync(pkidir + 'root');
 
-        fs.ensureDirSync(pkidir + 'root/certs');
-        fs.ensureDirSync(pkidir + 'root/crl');
+        fse.ensureDirSync(pkidir + 'root/certs');
+        fse.ensureDirSync(pkidir + 'root/crl');
 
-        fs.writeFileSync(pkidir + 'root/index.txt', '', 'utf8');
-        fs.writeFileSync(pkidir + 'root/serial', '1000', 'utf8');
+        fse.writeFileSync(pkidir + 'root/index.txt', '', 'utf8');
+        fse.writeFileSync(pkidir + 'root/serial', '1000', 'utf8');
 
         // Customize openssl.cnf and copy to root/
 
-        openssl_root = fs.readFileSync(__dirname + '/pkitemplate/openssl_root.cnf.tpl', 'utf8');
+        openssl_root = fse.readFileSync(__dirname + '/pkitemplate/openssl_root.cnf.tpl', 'utf8');
         openssl_root = openssl_root.replace(/{basedir}/g, pkidir + 'root');
         openssl_root = openssl_root.replace(/{days}/g, global.config.ca.root.days);
         openssl_root = openssl_root.replace(/{country}/g, global.config.ca.root.country);
@@ -53,24 +53,24 @@ var createFileStructure = function() {
         openssl_root = openssl_root.replace(/{organization}/g, global.config.ca.root.organization);
         openssl_root = openssl_root.replace(/{commonname}/g, global.config.ca.root.commonname);
 
-        fs.writeFileSync(pkidir + 'root/openssl.cnf', openssl_root);
+        fse.writeFileSync(pkidir + 'root/openssl.cnf', openssl_root);
 
         /*
          * Prepare intermediate/ dir
          */
 
-        fs.ensureDirSync(pkidir + 'intermediate');
+        fse.ensureDirSync(pkidir + 'intermediate');
 
-        fs.ensureDirSync(pkidir + 'intermediate/certs');
-        fs.ensureDirSync(pkidir + 'intermediate/crl');
+        fse.ensureDirSync(pkidir + 'intermediate/certs');
+        fse.ensureDirSync(pkidir + 'intermediate/crl');
 
-        fs.writeFileSync(pkidir + 'intermediate/index.txt', '', 'utf8');
-        fs.writeFileSync(pkidir + 'intermediate/serial', '1000', 'utf8');
-        fs.writeFileSync(pkidir + 'intermediate/crlnumber', '1000', 'utf8');
+        fse.writeFileSync(pkidir + 'intermediate/index.txt', '', 'utf8');
+        fse.writeFileSync(pkidir + 'intermediate/serial', '1000', 'utf8');
+        fse.writeFileSync(pkidir + 'intermediate/crlnumber', '1000', 'utf8');
 
         // Customize openssl.cnf and copy to root/
 
-        openssl_intermediate = fs.readFileSync(__dirname + '/pkitemplate/openssl_intermediate.cnf.tpl', 'utf8');
+        openssl_intermediate = fse.readFileSync(__dirname + '/pkitemplate/openssl_intermediate.cnf.tpl', 'utf8');
         openssl_intermediate = openssl_intermediate.replace(/{basedir}/g, pkidir + 'intermediate');
         openssl_intermediate = openssl_intermediate.replace(/{days}/g, global.config.ca.intermediate.days);
         openssl_intermediate = openssl_intermediate.replace(/{country}/g, global.config.ca.intermediate.country);
@@ -81,32 +81,32 @@ var createFileStructure = function() {
         openssl_intermediate = openssl_intermediate.replace(/{ocspurl}/g, global.config.ca.intermediate.ocsp.url);
         openssl_intermediate = openssl_intermediate.replace(/{crlurl}/g, global.config.ca.intermediate.crl.url);
 
-        fs.writeFileSync(pkidir + 'intermediate/openssl.cnf', openssl_intermediate);
+        fse.writeFileSync(pkidir + 'intermediate/openssl.cnf', openssl_intermediate);
 
         /*
          * Prepare intermediate/ocsp dir
          */
-        fs.ensureDirSync(pkidir + 'intermediate/ocsp');
-        openssl_intermediate_ocsp = fs.readFileSync(__dirname + '/pkitemplate/openssl_ocsp.cnf.tpl', 'utf8');
+        fse.ensureDirSync(pkidir + 'intermediate/ocsp');
+        openssl_intermediate_ocsp = fse.readFileSync(__dirname + '/pkitemplate/openssl_ocsp.cnf.tpl', 'utf8');
         openssl_intermediate_ocsp = openssl_intermediate_ocsp.replace(/{state}/g, global.config.ca.intermediate.state);
         openssl_intermediate_ocsp = openssl_intermediate_ocsp.replace(/{country}/g, global.config.ca.intermediate.country);
         openssl_intermediate_ocsp = openssl_intermediate_ocsp.replace(/{locality}/g, global.config.ca.intermediate.locality);
         openssl_intermediate_ocsp = openssl_intermediate_ocsp.replace(/{organization}/g, global.config.ca.intermediate.organization);
         openssl_intermediate_ocsp = openssl_intermediate_ocsp.replace(/{commonname}/g, global.config.server.ocsp.domain);
-        fs.writeFileSync(pkidir + 'intermediate/ocsp/openssl.cnf', openssl_intermediate_ocsp);
+        fse.writeFileSync(pkidir + 'intermediate/ocsp/openssl.cnf', openssl_intermediate_ocsp);
 
 
         /*
          * Prepare apicert configuration
          */
-        fs.ensureDirSync(pkidir + 'apicert');
-        openssl_apicert = fs.readFileSync(__dirname + '/pkitemplate/openssl_apicert.cnf.tpl', 'utf8');
+        fse.ensureDirSync(pkidir + 'apicert');
+        openssl_apicert = fse.readFileSync(__dirname + '/pkitemplate/openssl_apicert.cnf.tpl', 'utf8');
         openssl_apicert = openssl_apicert.replace(/{state}/g, global.config.ca.root.state);
         openssl_apicert = openssl_apicert.replace(/{country}/g, global.config.ca.root.country);
         openssl_apicert = openssl_apicert.replace(/{locality}/g, global.config.ca.root.locality);
         openssl_apicert = openssl_apicert.replace(/{organization}/g, global.config.ca.root.organization);
         openssl_apicert = openssl_apicert.replace(/{commonname}/g, global.config.server.http.domain);
-        fs.writeFileSync(pkidir + 'apicert/openssl.cnf', openssl_apicert);
+        fse.writeFileSync(pkidir + 'apicert/openssl.cnf', openssl_apicert);
 
         resolve();
     });
@@ -159,30 +159,30 @@ var createIntermediateCA = function() {
                     exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
                 }, function() {
-/*
+
                     // Create CA chain file
 		        	log(">>> Creating Intermediate CA chain file");
                     
                     // Read intermediate
 			        log(">>>> Read Intermediate CA (" + pkidir + "intermediate/intermediate.cert.pem)");
-                    intermediateCert = fs.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
+                    intermediateCert = fse.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
 			        log(">>>>> Intermediate CA Certificate read!");
                     
                     // Read root cert
                     log(">>> Reading Root Certificate");
-                    rootCert = fs.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
+                    rootCert = fse.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
 			        log(">>>>> Root CA Certificate read!");
 
                     cachain = intermediateCert + '\n\n' + rootCert;
                     log(">>> Write Certificate Chain");
-                    fs.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
+                    fse.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
 			        log(">>>>> Certificate Chain written!");
 
                     // Remove intermediate.csr.pem file
                     log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
-                    fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
+                    fse.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
                     log(">>>> Intermediate csr.pem file removed!");
-*/
+
                     resolve();
                 });
             });
@@ -208,7 +208,7 @@ var createOCSPKeys = function() {
                 exec('openssl ca -config ../openssl.cnf -extensions ocsp -days 3650 -notext -md sha256 -in ocsp.csr.pem -out ocsp.cert.pem -passin pass:' + global.config.ca.intermediate.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate/ocsp'
                 }, function() {
-                    fs.removeSync(pkidir + 'intermediate/ocsp/ocsp.csr.pem');
+                    fse.removeSync(pkidir + 'intermediate/ocsp/ocsp.csr.pem');
                     resolve();
                 });
             });
@@ -239,7 +239,7 @@ var createAPICert = function() {
                 exec('openssl ca -config ../root/openssl.cnf -extensions server_cert -days 3650 -notext -md sha256 -in csr.pem -out cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'apicert'
                 }, function() {
-                    fs.removeSync(pkidir + 'apicert/csr.pem');
+                    fse.removeSync(pkidir + 'apicert/csr.pem');
                     resolve();
                 });
             });
@@ -257,14 +257,14 @@ var setFilePerms = function() {
 
     return new Promise(function(resolve, reject) {
         // Root CA
-        fs.chmodSync(pkidir + 'root/root.key.pem', 0400);
-        fs.chmodSync(pkidir + 'root/root.cert.pem', 0444);
-        fs.chmodSync(pkidir + 'root/openssl.cnf', 0400);
+        fse.chmodSync(pkidir + 'root/root.key.pem', 0400);
+        fse.chmodSync(pkidir + 'root/root.cert.pem', 0444);
+        fse.chmodSync(pkidir + 'root/openssl.cnf', 0400);
 
         // Intermediate CA
-        fs.chmodSync(pkidir + 'intermediate/intermediate.key.pem', 0400);
-        fs.chmodSync(pkidir + 'intermediate/intermediate.cert.pem', 0444);
-        fs.chmodSync(pkidir + 'intermediate/openssl.cnf', 0400);
+        fse.chmodSync(pkidir + 'intermediate/intermediate.key.pem', 0400);
+        fse.chmodSync(pkidir + 'intermediate/intermediate.cert.pem', 0444);
+        fse.chmodSync(pkidir + 'intermediate/openssl.cnf', 0400);
 
         resolve();
     });
@@ -285,7 +285,7 @@ module.exports.create = function() {
                                 log("### Finished!");
 
                                 // Tag mypki as ready.
-                                fs.writeFileSync(pkidir + 'created', '', 'utf8');
+                                fse.writeFileSync(pkidir + 'created', '', 'utf8');
                                 resolve()
                             })
                             .catch(function(err) {
