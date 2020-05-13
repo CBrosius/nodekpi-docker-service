@@ -19,7 +19,7 @@ services:
     image: nodepki-webclient:7.0
     environment: 
       - CA_API_SERVER_URL=api
-      - CA_WEBCLIENT_HTTP_URL="http://127.0.0.1:5000"
+      - CA_WEBCLIENT_HTTP_URL="http://192.168.60.11:5000"
       - COUNTRY_CODE=DE
       - STATE_NAME=RLP
       - LOCALITY_NAME=PLP
