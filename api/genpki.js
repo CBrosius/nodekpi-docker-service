@@ -124,11 +124,11 @@ var createRootCA = function() {
         exec('openssl genrsa -aes256 -out root.key.pem -passout pass:' + global.config.ca.root.passphrase + ' 4096', { cwd: pkidir + 'root' },
             function() {
             // Create Root certificate
-            log(">>>> Creating Root CA public Certificate...");
-            log(">>>>> 'openssl req -config openssl.cnf -key root.key.pem -new -x509 -days <DAYS> -sha256 -extensions v3_ca -out root.cert.pem -passin pass:<ROOT_PASSPHRASE>'");
+            log(">>>>> Creating Root CA public Certificate...");
+            log(">>>>>> 'openssl req -config openssl.cnf -key root.key.pem -new -x509 -days <DAYS> -sha256 -extensions v3_ca -out root.cert.pem -passin pass:<ROOT_PASSPHRASE>'");
             exec('openssl req -config openssl.cnf -key root.key.pem -new -x509 -days ' + global.config.ca.root.days + ' -sha256 -extensions v3_ca -out root.cert.pem -passin pass:' + global.config.ca.root.passphrase, { cwd: pkidir + 'root' }, 
                 function() {
-                    log(">>>> Creating Root CA finished successful");
+                    log(">>>>>>> Creating Root CA finished successful");
                     resolve();
                 });
         });
@@ -148,34 +148,39 @@ var createIntermediateCA = function() {
             cwd: pkidir + 'intermediate'
         }, function() {
             // Create intermediate certificate request
-            log(">>>> Creating Intermediate CA Certificate Request (CSR)...");
-            log(">>>>> 'openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:<INTERMEDIATE_PASSPHRASE>'");
+            log(">>>>> Creating Intermediate CA Certificate Request (CSR)...");
+            log(">>>>>> 'openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:<INTERMEDIATE_PASSPHRASE>'");
             exec('openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:' + global.config.ca.intermediate.passphrase, {
                 cwd: pkidir + 'intermediate'
             }, function() {
                 // Create intermediate certificate
-                log(">>>> Creating Intermediate CA Certificate...");
-                log(">>>>> 'openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days <DAYS> -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:<ROOT_PASSPHRASE> -batch'");
+                log(">>>>>> Creating Intermediate CA Certificate...");
+                log(">>>>>>> 'openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days <DAYS> -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:<ROOT_PASSPHRASE> -batch'");
                     exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
                 }, function() {
                     // Remove intermediate.csr.pem file
-                    log(">>> remove Intermediate csr.pem file");
+                    log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
                     fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
+                    log(">>>> Intermediate csr.pem file removed!");
 
                     // Create CA chain file
 		        	log(">>> Creating Intermediate CA chain file");
                     
                     // Read intermediate
-			        log(">>> Read Intermediate CA");
+			        log(">>>> Read Intermediate CA (" + pkidir + "intermediate/intermediate.cert.pem)");
                     intermediate = fs.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
+			        log(">>>>> Intermediate CA Certificate read!");
                     
                     // Read root cert
                     log(">>> Reading Root Certificate");
                     root = fs.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
+			        log(">>>>> Root CA Certificate read!");
 
                     cachain = intermediate + '\n\n' + root;
+                    log(">>> Write Certificate Chain");
                     fs.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
+			        log(">>>>> Certificate Chain written!");
                     resolve();
                 });
             });
