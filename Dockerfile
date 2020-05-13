@@ -7,6 +7,8 @@ RUN apk add --no-cache \
     nano \
     supervisor
 
+RUN mkdir -p /var/log/supervisor
+
 # create NodePKI 
 WORKDIR /opt/nodepki
 COPY ./api/ .
