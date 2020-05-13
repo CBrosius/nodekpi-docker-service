@@ -5,6 +5,7 @@
 var log         = require('fancy-log');
 var fs          = require('fs-extra');
 var yaml        = require('js-yaml');
+var exec        = require('child_process').exec;
 var execSync    = require('child_process').execSync;
 
 // Absolute pki base dir
@@ -116,16 +117,22 @@ var createFileStructure = function() {
 var createRootCA = function() {
     log(">>> Creating Root CA");
 
-    
+    return new Promise(function(resolve, reject) {
         // Create root key
-        execSync('openssl genrsa -aes256 -out root.key.pem -passout pass:' + global.config.ca.root.passphrase + ' 4096', {
-            cwd: pkidir + 'root'
-        }, function() {
+        log(">>>> Creating Root CA private Key...");
+        log(">>>>> 'openssl genrsa -aes256 -out root.key.pem -passout pass:' + global.config.ca.root.passphrase + ' 4096'");
+        exec('openssl genrsa -aes256 -out root.key.pem -passout pass:' + global.config.ca.root.passphrase + ' 4096', { cwd: pkidir + 'root' },
+            function() {
             // Create Root certificate
-            execSync('openssl req -config openssl.cnf -key root.key.pem -new -x509 -days ' + global.config.ca.root.days + ' -sha256 -extensions v3_ca -out root.cert.pem -passin pass:' + global.config.ca.root.passphrase, {
-                cwd: pkidir + 'root'
-            });
+            log(">>>> Creating Root CA public Certificate...");
+            log(">>>>> ''openssl req -config openssl.cnf -key root.key.pem -new -x509 -days ' + global.config.ca.root.days + ' -sha256 -extensions v3_ca -out root.cert.pem -passin pass:' + global.config.ca.root.passphrase");
+            exec('openssl req -config openssl.cnf -key root.key.pem -new -x509 -days ' + global.config.ca.root.days + ' -sha256 -extensions v3_ca -out root.cert.pem -passin pass:' + global.config.ca.root.passphrase, { cwd: pkidir + 'root' }, 
+                function() {
+                    log(">>>> Creating Root CA finished successful");
+                    resolve();
+                });
         });
+    });
 };
 
 
@@ -135,17 +142,15 @@ var createIntermediateCA = function() {
 
     return new Promise(function(resolve, reject) {
         // Create intermediate key
-        execSync('openssl genrsa -aes256 -out intermediate.key.pem -passout pass:' + global.config.ca.intermediate.passphrase + ' 4096', {
+        exec('openssl genrsa -aes256 -out intermediate.key.pem -passout pass:' + global.config.ca.intermediate.passphrase + ' 4096', {
             cwd: pkidir + 'intermediate'
         }, function() {
             // Create intermediate certificate request
-			log(">>> Creating Intermediate CA request");
-            execSync('openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:' + global.config.ca.intermediate.passphrase, {
+            exec('openssl req -config openssl.cnf -new -sha256 -key intermediate.key.pem -out intermediate.csr.pem -passin pass:' + global.config.ca.intermediate.passphrase, {
                 cwd: pkidir + 'intermediate'
             }, function() {
                 // Create intermediate certificate
-  			log(">>> Creating Intermediate CA certificate");
-              execSync('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
+                exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
                 }, function() {
                     // Remove intermediate.csr.pem file
@@ -161,6 +166,8 @@ var createIntermediateCA = function() {
                     // Read intermediate
 			log(">>> Read Intermediate CA");
                     intermediate = fs.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
+                    // Read root cert
+                    root = fs.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
                     cachain = intermediate + '\n\n' + root;
                     fs.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
                     resolve();
@@ -177,15 +184,15 @@ var createOCSPKeys = function() {
 
     return new Promise(function(resolve, reject) {
         // Create key
-        execSync('openssl genrsa -aes256 -out ocsp.key.pem -passout pass:' + global.config.ca.intermediate.ocsp.passphrase + ' 4096', {
+        exec('openssl genrsa -aes256 -out ocsp.key.pem -passout pass:' + global.config.ca.intermediate.ocsp.passphrase + ' 4096', {
             cwd: pkidir + 'intermediate/ocsp'
         }, function() {
             // Create request
-            execSync('openssl req -config openssl.cnf -new -sha256 -key ocsp.key.pem -passin pass:' + global.config.ca.intermediate.ocsp.passphrase + ' -out ocsp.csr.pem', {
+            exec('openssl req -config openssl.cnf -new -sha256 -key ocsp.key.pem -passin pass:' + global.config.ca.intermediate.ocsp.passphrase + ' -out ocsp.csr.pem', {
                 cwd: pkidir + 'intermediate/ocsp'
             }, function() {
                 // Create certificate
-                execSync('openssl ca -config ../openssl.cnf -extensions ocsp -days 3650 -notext -md sha256 -in ocsp.csr.pem -out ocsp.cert.pem -passin pass:' + global.config.ca.intermediate.passphrase + ' -batch', {
+                exec('openssl ca -config ../openssl.cnf -extensions ocsp -days 3650 -notext -md sha256 -in ocsp.csr.pem -out ocsp.cert.pem -passin pass:' + global.config.ca.intermediate.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate/ocsp'
                 }, function() {
                     fs.removeSync(pkidir + 'intermediate/ocsp/ocsp.csr.pem');
@@ -208,15 +215,15 @@ var createAPICert = function() {
 
     return new Promise(function(resolve, reject) {
         // Create key
-        execSync('openssl genrsa -out key.pem 4096', {
+        exec('openssl genrsa -out key.pem 4096', {
             cwd: pkidir + 'apicert'
         }, function() {
             // Create request
-            execSync('openssl req -config openssl.cnf -new -sha256 -key key.pem -out csr.pem', {
+            exec('openssl req -config openssl.cnf -new -sha256 -key key.pem -out csr.pem', {
                 cwd: pkidir + 'apicert'
             }, function() {
                 // Create certificate
-                execSync('openssl ca -config ../root/openssl.cnf -extensions server_cert -days 3650 -notext -md sha256 -in csr.pem -out cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
+                exec('openssl ca -config ../root/openssl.cnf -extensions server_cert -days 3650 -notext -md sha256 -in csr.pem -out cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'apicert'
                 }, function() {
                     fs.removeSync(pkidir + 'apicert/csr.pem');
