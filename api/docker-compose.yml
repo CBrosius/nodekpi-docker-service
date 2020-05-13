@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  api:
+    image: nodepki-api:7.0
+    environment:
+      - ROOT_PASSPHRASE="123456789"
+      - ROOT_CA_COMMON_NAME="Private Root CA"
+      - INTERMEDIATE_PASSPHRASE="123456789" 
+      - INTERMEDIATE_CA_COMMON_NAME="Private Intermediate CA"
+      - OCSP_PASSPHRASE="123456789"
+      - COUNTRY_CODE=WORLD
+      - STATE_NAME=the
+      - LOCALITY_NAME=in
+      - ORGANIZATION_NAME=somewhere
+      - WEBUI_USER=admin
+      - WEBUI_PASS=admin
