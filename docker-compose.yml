@@ -9,10 +9,10 @@ services:
       - INTERMEDIATE_PASSPHRASE="123456789" 
       - INTERMEDIATE_CA_COMMON_NAME="Private Intermediate CA"
       - OCSP_PASSPHRASE="123456789"
-      - COUNTRY_CODE=WORLD
-      - STATE_NAME=the
-      - LOCALITY_NAME=in
-      - ORGANIZATION_NAME=somewhere
+      - COUNTRY_CODE=DE
+      - STATE_NAME=RLP
+      - LOCALITY_NAME=RLP
+      - ORGANIZATION_NAME=private
       - WEBUI_USER=admin
       - WEBUI_PASS=admin
   web:
@@ -20,9 +20,9 @@ services:
     environment: 
       - CA_API_SERVER_URL=api
       - CA_WEBCLIENT_HTTP_URL="http://127.0.0.1:5000"
-      - COUNTRY_CODE=WORLD
-      - STATE_NAME=the
-      - LOCALITY_NAME=in
-      - ORGANIZATION_NAME=somewhere
+      - COUNTRY_CODE=DE
+      - STATE_NAME=RLP
+      - LOCALITY_NAME=PLP
+      - ORGANIZATION_NAME=private
     ports:
       - 5000:5000
