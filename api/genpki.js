@@ -159,11 +159,7 @@ var createIntermediateCA = function() {
                     exec('openssl ca -config ../root/openssl.cnf -extensions v3_intermediate_ca -days ' + global.config.ca.intermediate.days + ' -notext -md sha256 -in intermediate.csr.pem -out intermediate.cert.pem -passin pass:' + global.config.ca.root.passphrase + ' -batch', {
                     cwd: pkidir + 'intermediate'
                 }, function() {
-                    // Remove intermediate.csr.pem file
-                    // log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
-                    // fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
-                    // log(">>>> Intermediate csr.pem file removed!");
-
+/*
                     // Create CA chain file
 		        	log(">>> Creating Intermediate CA chain file");
                     
@@ -181,6 +177,12 @@ var createIntermediateCA = function() {
                     log(">>> Write Certificate Chain");
                     fs.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
 			        log(">>>>> Certificate Chain written!");
+
+                    // Remove intermediate.csr.pem file
+                    log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
+                    fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
+                    log(">>>> Intermediate csr.pem file removed!");
+*/
                     resolve();
                 });
             });
