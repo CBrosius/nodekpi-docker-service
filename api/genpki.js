@@ -160,24 +160,24 @@ var createIntermediateCA = function() {
                     cwd: pkidir + 'intermediate'
                 }, function() {
                     // Remove intermediate.csr.pem file
-                    log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
-                    fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
-                    log(">>>> Intermediate csr.pem file removed!");
+                    // log(">>> remove Intermediate csr.pem file... (" + pkidir + "intermediate/intermediate.csr.pem)");
+                    // fs.removeSync(pkidir + 'intermediate/intermediate.csr.pem');
+                    // log(">>>> Intermediate csr.pem file removed!");
 
                     // Create CA chain file
 		        	log(">>> Creating Intermediate CA chain file");
                     
                     // Read intermediate
 			        log(">>>> Read Intermediate CA (" + pkidir + "intermediate/intermediate.cert.pem)");
-                    intermediate = fs.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
+                    intermediateCert = fs.readFileSync(pkidir + 'intermediate/intermediate.cert.pem', 'utf8');
 			        log(">>>>> Intermediate CA Certificate read!");
                     
                     // Read root cert
                     log(">>> Reading Root Certificate");
-                    root = fs.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
+                    rootCert = fs.readFileSync(pkidir + 'root/root.cert.pem', 'utf8');
 			        log(">>>>> Root CA Certificate read!");
 
-                    cachain = intermediate + '\n\n' + root;
+                    cachain = intermediateCert + '\n\n' + rootCert;
                     log(">>> Write Certificate Chain");
                     fs.writeFileSync(pkidir + 'intermediate/ca-chain.cert.pem', cachain);
 			        log(">>>>> Certificate Chain written!");
