@@ -1,8 +1,8 @@
 #!/bin/bash
 
-bash /opt/nodepki/start.sh
+/opt/nodepki/start.sh
 
-bash /opt/nodepki-webclient/start.sh
+/opt/nodepki-webclient/start.sh
 
 supervisord --nodaemon --configuration /etc/supervisord.conf
 
