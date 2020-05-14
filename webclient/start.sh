@@ -33,6 +33,6 @@ csr_defaults:
     organization: ${ORGANIZATION_NAME}
 EOF
 
-cd /opt/nodepki-webclient
-npm install
+# cd /opt/nodepki-webclient
+# npm install
 

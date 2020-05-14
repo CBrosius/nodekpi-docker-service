@@ -73,8 +73,8 @@ cert:
     lifetime_max: ${CERT_MAX_LIFETIME_IN_DAYS}
 EOF
 
-cd /opt/nodepki
-npm install
+# cd /opt/nodepki
+# npm install
 
 if [ ! -s /opt/nodepki/data/user.db ]; then
   echo "Adding user to the database"
