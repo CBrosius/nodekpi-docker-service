@@ -4,7 +4,6 @@ RUN apk add --no-cache \
     openssl \
     curl \
     bash \
-    nano \
     supervisor
 
 RUN mkdir -p /var/log/supervisor
