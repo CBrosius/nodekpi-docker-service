@@ -18,7 +18,7 @@ RUN chmod +x /opt/nodepki/start.sh
 
 VOLUME ["/opt/nodepki/data"]
 
-# CMD ["bash", "/opt/nodepki/start.sh"]
+CMD ["bash", "/opt/nodepki/start.sh"]
 
 # create NodePKI-WebClient
 WORKDIR /opt/nodepki-webclient
@@ -30,7 +30,7 @@ RUN chmod +x /opt/nodepki-webclient/start.sh
 
 VOLUME ["/opt/nodepki-webclient/data"]
 
-# CMD ["bash", "/opt/nodepki-webclient/start.sh"]
+CMD ["bash", "/opt/nodepki-webclient/start.sh"]
 
 # Expose ports
 EXPOSE 5000
