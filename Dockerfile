@@ -8,12 +8,6 @@ RUN apk add --no-cache \
 
 RUN mkdir -p /var/log/supervisor
 
-ARG MQTT_HOST=127.0.0.1
-ARG MQTT_PORT=1833
-
-ENV MQTT_HOST=$MQTT_HOST
-ENV MQTT_PORT=$MQTT_PORT
-
 ARG ROOT_PASSPHRASE="123456789"
 ARG ROOT_CA_COMMON_NAME="Private Root CA"
 ARG INTERMEDIATE_PASSPHRASE="123456789" 
@@ -48,11 +42,7 @@ COPY ./api/ .
 
 RUN cd /opt/nodepki && npm install
 
-RUN chmod +x /opt/nodepki/start.sh
-
 VOLUME ["/opt/nodepki/data"]
-
-# CMD ["bash", "/opt/nodepki/start.sh"]
 
 # create NodePKI-WebClient
 WORKDIR /opt/nodepki-webclient
@@ -60,14 +50,12 @@ COPY ./webclient/ .
 
 RUN cd /opt/nodepki-webclient && npm install
 
-RUN chmod +x /opt/nodepki-webclient/start.sh
-
 VOLUME ["/opt/nodepki-webclient/data"]
-
-# CMD ["bash", "/opt/nodepki-webclient/start.sh"]
 
 # Expose ports
 EXPOSE 5000
+
+WORKDIR /opt
 
 ADD supervisord.conf /etc/
 

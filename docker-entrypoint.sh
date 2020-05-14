@@ -1,5 +1,5 @@
 #!/bin/bash
 
-bash /opt/nodepki/setup.sh
+bash /opt/nodepki/start.sh
 
-bash /opt/nodepki-webclient/setup.sh
+bash /opt/nodepki-webclient/start.sh
