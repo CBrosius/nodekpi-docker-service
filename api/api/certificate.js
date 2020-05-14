@@ -9,7 +9,7 @@ var util = require('util');
 var fs = require('fs-extra');
 var exec = require('child_process').exec;
 
-const uuid = require('uuid');
+const {v4:uuidv4} = require('uuid');
 var log = require('fancy-log');
 
 var certdb = require('../certdb.js');
@@ -127,7 +127,7 @@ certificate.request = function(req, res){
     log("Certificate type: " + type);
 
     // Create temporary directory ...
-    var tempdir = global.paths.tempdir + uuid() + "/";
+    var tempdir = global.paths.tempdir + uuidv4() + "/";
     fs.mkdirSync(tempdir);
 
     new Promise(function(resolve, reject){
@@ -229,7 +229,7 @@ certificate.revoke = function(req, res){
 
 
     // Create temporary directory ...
-    var tempdir = global.paths.tempdir + uuid() + "/";
+    var tempdir = global.paths.tempdir + uuidv4() + "/";
     fs.mkdirSync(tempdir);
 
     new Promise(function(resolve, reject){

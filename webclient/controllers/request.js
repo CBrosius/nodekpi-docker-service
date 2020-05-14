@@ -1,7 +1,7 @@
 var log         = require('fancy-log')
 var apiclient   = require('./../apiclient.js')
 var exec        = require('child_process').exec;
-const uuid    = require('uuid');
+const {v4:uuidv4} = require('uuid');
 var fs          = require('fs-extra');
 
 
@@ -27,7 +27,7 @@ module.exports = function(req, res) {
                 var requestdata;
 
                 // Create temporary dir
-                var tempdir = 'tmp/' + uuid() + '/';
+                var tempdir = 'tmp/' + uuidv4() + '/';
                 fs.ensureDirSync(tempdir);
 
                 new Promise(function(resolve, reject) {
