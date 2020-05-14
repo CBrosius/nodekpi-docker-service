@@ -39,7 +39,7 @@ ENV CA_WEBCLIENT_HTTP_URL=$CA_WEBCLIENT_HTTP_URL
 # create NodePKI 
 WORKDIR /opt/nodepki
 COPY ./api/ .
-
+RUN chmod +x /opn/nodepki/start.sh
 RUN cd /opt/nodepki && npm install
 
 VOLUME ["/opt/nodepki/data"]
@@ -47,7 +47,7 @@ VOLUME ["/opt/nodepki/data"]
 # create NodePKI-WebClient
 WORKDIR /opt/nodepki-webclient
 COPY ./webclient/ .
-
+RUN chmod +x /opn/nodepki-webclient/start.sh
 RUN cd /opt/nodepki-webclient && npm install
 
 VOLUME ["/opt/nodepki-webclient/data"]
