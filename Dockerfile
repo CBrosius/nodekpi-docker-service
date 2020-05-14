@@ -36,5 +36,6 @@ VOLUME ["/opt/nodepki-webclient/data"]
 # Expose ports
 EXPOSE 5000
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-CMD ["/usr/bin/supervisord"]
+ADD supervisord.conf /etc/
+
+ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
